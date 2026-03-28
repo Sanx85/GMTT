@@ -1,0 +1,550 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GMT Mining | Precision Cracking Solutions</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;700;900&display=swap" rel="stylesheet">
+    <style>
+        body { font-family: 'Inter', sans-serif; background: white; overflow-x: hidden; margin: 0; scroll-behavior: smooth; }
+
+        /* Entrance Animations */
+        @keyframes revealUp {
+            from { opacity: 0; transform: translateY(40px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        @keyframes imageScale {
+            from { opacity: 0; transform: scale(1.1); }
+            to { opacity: 1; transform: scale(1); }
+        }
+
+        .animate-reveal { animation: revealUp 1s cubic-bezier(0.2, 1, 0.3, 1) forwards; }
+        .animate-image { animation: imageScale 1.5s cubic-bezier(0.2, 1, 0.3, 1) forwards; }
+        .delay-1 { animation-delay: 0.2s; }
+        .delay-2 { animation-delay: 0.4s; }
+
+        /* --- HERO SECTION STYLES --- */
+        .hero-section {
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+            width: 100%;
+            position: relative;
+        }
+
+        @media (min-width: 768px) {
+            .hero-section { flex-direction: row; align-items: center; height: 100vh; }
+        }
+
+        .img-mask-container {
+            position: relative;
+            width: 100%;
+            height: 450px;
+            overflow: hidden;
+            background: #000;
+        }
+
+        @media (min-width: 768px) {
+            .img-mask-container {
+                width: 50%;
+                height: 100%;
+                clip-path: polygon(15% 0, 100% 0, 100% 100%, 0% 100%);
+            }
+        }
+
+        .parallax-img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            filter: grayscale(100%);
+            transition: filter 0.8s ease, transform 0.1s linear;
+        }
+
+        .img-mask-container:hover .parallax-img {
+            filter: grayscale(0%);
+        }
+
+        /* --- GLOBAL PARALLAX & SCROLL --- */
+        .scroll-parallax {
+            will-change: transform;
+            transition: transform 0.2s cubic-bezier(0,0,0.1,1);
+        }
+
+        .animate-on-scroll {
+            opacity: 0;
+            transform: translateY(30px);
+            transition: all 0.8s cubic-bezier(0.2, 1, 0.3, 1);
+        }
+
+        .animate-on-scroll.is-visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        /* --- CARD HOVER & STACKING EFFECTS --- */
+        .product-card, .service-card {
+            position: relative;
+            overflow: hidden;
+            background: #fff;
+            height: 500px;
+            cursor: pointer;
+            border: 1px solid #eee;
+            transition: all 0.6s cubic-bezier(0.2, 1, 0.3, 1);
+        }
+
+        .card-image-bg {
+            position: absolute;
+            top: 0; left: 0; width: 100%; height: 100%;
+            object-fit: cover;
+            filter: grayscale(100%);
+            transition: transform 0.8s ease, filter 0.8s ease;
+            z-index: 1;
+        }
+
+        .card-overlay {
+            position: absolute;
+            inset: 0;
+            background: linear-gradient(to bottom, rgba(0,0,0,0) 40%, rgba(0,0,0,0.8) 100%);
+            z-index: 2;
+            transition: background 0.5s ease;
+        }
+
+        .card-content {
+            position: relative;
+            z-index: 3;
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+            justify-content: flex-end;
+            padding: 2rem;
+            color: white;
+            transition: all 0.5s ease;
+        }
+
+        .card-description {
+            max-height: 0;
+            opacity: 0;
+            overflow: hidden;
+            transition: all 0.5s cubic-bezier(0.2, 1, 0.3, 1);
+            font-size: 0.875rem;
+            margin-top: 1rem;
+        }
+
+        .product-card:hover .card-image-bg, .service-card:hover .card-image-bg { transform: scale(1.1); filter: grayscale(0%); }
+        .product-card:hover .card-overlay, .service-card:hover .card-overlay { background: rgba(0, 0, 0, 0.6); }
+        .product-card:hover .card-description, .service-card:hover .card-description { max-height: 150px; opacity: 1; }
+
+        @media (max-width: 767px) {
+            .product-card, .service-card {
+                position: sticky;
+                top: 80px;
+                margin-bottom: 2rem;
+                box-shadow: 0 -20px 40px rgba(0,0,0,0.05);
+            }
+        }
+
+        /* Sidebar Styling */
+        #sidebar {
+            transition: transform 0.5s cubic-bezier(0.77, 0, 0.175, 1);
+            backdrop-filter: blur(15px);
+            background: rgba(255, 255, 255, 0.98);
+        }
+
+        .nav-item {
+            position: relative;
+            transition: color 0.3s;
+        }
+        .nav-item::after {
+            content: '';
+            position: absolute;
+            width: 0; height: 2px;
+            bottom: -5px; left: 0;
+            background: black;
+            transition: width 0.3s;
+        }
+        .nav-item:hover::after { width: 100%; }
+
+        /* Form Inputs Styling */
+        .form-input {
+            width: 100%;
+            background: transparent;
+            border: none;
+            border-bottom: 1px solid #e5e7eb;
+            padding: 1rem 0;
+            font-size: 0.875rem;
+            outline: none;
+            transition: border-color 0.3s;
+        }
+        .form-input:focus { border-color: #000; }
+
+        /* Spacing Utilities */
+        .section-gap { padding-top: 8rem; padding-bottom: 8rem; }
+        .tight-gap { padding-top: 2rem; }
+
+        @media (max-width: 768px) {
+            .section-gap { padding-top: 4rem; padding-bottom: 4rem; }
+        }
+    </style>
+</head>
+<body class="antialiased">
+
+    <div id="sidebar" class="fixed top-0 left-0 h-full w-72 z-[1000] shadow-2xl transform -translate-x-full flex flex-col p-10">
+        <button onclick="toggleMenu()" class="self-end mb-12 text-gray-400 hover:text-black">
+            <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>
+        </button>
+        <nav class="flex flex-col space-y-8 text-xs font-bold uppercase tracking-[0.3em] text-gray-500">
+            <a href="#" class="text-black">Home</a>
+            <a href="#" class="hover:text-black">About Us</a>
+            <a href="productspage.html" class="hover:text-black">Products</a>
+            <a href="#operations" class="hover:text-black">Operations</a>
+            <a href="#contact" class="hover:text-black">Contact</a>
+        </nav>
+        <div class="mt-auto">
+            <button class="w-full py-4 bg-black text-white text-[10px] font-bold uppercase tracking-widest">Client Portal</button>
+        </div>
+    </div>
+
+    <header class="absolute top-0 w-full z-[100] flex justify-between items-center px-8 md:px-16 h-24">
+        <div class="text-2xl font-black tracking-tighter animate-reveal">
+            GMT<span class="text-gray-400 font-light italic">MINING</span>
+        </div>
+        
+        <nav class="hidden md:flex space-x-12 text-[11px] font-bold uppercase tracking-[0.3em] text-gray-500 animate-reveal delay-1">
+            <a href="#" class="nav-item text-black">Home</a>
+            <a href="#" class="nav-item">About Us</a>
+            <a href="productspage.html" class="nav-item">Products</a>
+            <a href="#operations" class="nav-item">Operations</a>
+            <a href="#contact" class="nav-item">Contact</a>
+        </nav>
+
+        <div class="flex items-center space-x-6">
+            <button class="hidden md:block px-8 py-3 bg-black text-white text-[10px] font-bold uppercase tracking-widest hover:bg-gray-800 transition-all shadow-xl animate-reveal delay-1">
+                Client Portal
+            </button>
+            <button onclick="toggleMenu()" class="md:hidden flex flex-col space-y-1.5">
+                <span class="w-6 h-0.5 bg-black"></span>
+                <span class="w-6 h-0.5 bg-black"></span>
+                <span class="w-4 h-0.5 bg-black"></span>
+            </button>
+        </div>
+    </header>
+
+    <main class="hero-section">
+        <div class="w-full md:w-1/2 flex flex-col justify-center px-8 md:px-20 pt-32 pb-12 md:py-0">
+            <div class="max-w-xl">
+                <div class="overflow-hidden mb-4">
+                    <span class="text-gray-400 text-xs font-black uppercase tracking-[0.5em] block animate-reveal delay-1">
+                        GMT Mining Solutions
+                    </span>
+                </div>
+                
+                <div class="overflow-hidden mb-8">
+                    <h1 class="text-6xl md:text-8xl font-black leading-[0.85] text-black animate-reveal delay-1">
+                        SILENT <br> 
+                        <span class="text-gray-200">POWER.</span>
+                    </h1>
+                </div>
+
+                <p class="text-gray-500 text-lg leading-relaxed mb-12 animate-reveal delay-2">
+                    Redefining demolition with advanced <span class="text-black font-bold">Super Expansive Mortar</span>. Safe, non-explosive, and eco-friendly technology designed for high-precision rock fragmentation and reinforced concrete removal.
+                </p>
+
+                <div class="flex items-center space-x-10 animate-reveal delay-2">
+                    <button class="group flex items-center space-x-4">
+                        <span class="text-sm font-black uppercase tracking-widest border-b-2 border-black pb-1">Our Technology</span>
+                        <svg class="w-5 h-5 transition-transform group-hover:translate-x-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8l4 4m0 0l-4 4m4-4H3"></path>
+                        </svg>
+                    </button>
+                    
+                    <div class="hidden lg:block border-l-2 border-gray-100 pl-6">
+                        <p class="text-[10px] uppercase font-black tracking-widest text-gray-400">Industry Standard</p>
+                        <p class="text-xl font-black italic uppercase">Certified</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="img-mask-container animate-image">
+            <video id="heroVideo" autoplay muted loop playsinline class="parallax-img">
+                <source src="Assests/videos/herosection.mp4" type="video/mp4">
+            </video>
+        </div>
+    </main>
+
+    <section class="relative bg-white section-gap px-8 md:px-20 overflow-hidden">
+        <div class="absolute top-20 left-0 text-[12vw] font-black text-gray-50 opacity-10 select-none pointer-events-none whitespace-nowrap scroll-parallax" data-speed="0.08">
+            PRECISION MINING
+        </div>
+
+        <div class="max-w-7xl mx-auto grid grid-cols-1 lg:grid-cols-2 gap-20 items-center">
+            <div class="relative h-[500px] md:h-[650px] flex items-center justify-center order-2 lg:order-1">
+                <div class="relative w-4/5 h-4/5 overflow-hidden shadow-2xl scroll-parallax" data-speed="0.04">
+                    <img src="https://media.istockphoto.com/id/1133989173/photo/sand-destined-to-the-manufacture-of-cement-in-a-quarry.jpg?s=612x612&w=0&k=20&c=kbLMm9vuxoYfzIsBiu-_TyZ52EX7C3OSm_YdhZ5heM0=" 
+                         class="w-full h-full object-cover grayscale hover:grayscale-0 transition-all duration-1000">
+                </div>
+                <div class="absolute -top-10 -right-2 w-40 md:w-56 h-72 overflow-hidden shadow-xl border-[12px] border-white scroll-parallax" data-speed="0.12">
+                    <img src="https://www.mining-technology.com/wp-content/uploads/sites/19/2020/10/Feature-Image-top-ten-metals-and-mining-companies.jpg" class="w-full h-full object-cover">
+                </div>
+                <div class="absolute -bottom-10 -left-2 w-48 md:w-64 h-48 overflow-hidden shadow-xl border-[12px] border-white scroll-parallax" data-speed="0.06">
+                    <img src="https://images.pexels.com/photos/2101137/pexels-photo-2101137.jpeg?cs=srgb&dl=pexels-tomfisk-2101137.jpg&fm=jpg" class="w-full h-full object-cover">
+                </div>
+            </div>
+
+            <div class="order-1 lg:order-2">
+                <div class="overflow-hidden mb-4">
+                    <span class="text-gray-400 text-xs font-black uppercase tracking-[0.5em] block animate-on-scroll">
+                        Established Expertise
+                    </span>
+                </div>
+                <h2 class="text-4xl md:text-6xl font-black mb-10 leading-tight animate-on-scroll">
+                    10 YEARS OF <br>
+                    <span class="text-gray-200">INNOVATION.</span>
+                </h2>
+                <div class="space-y-8 text-gray-500 text-lg leading-relaxed animate-on-scroll">
+                    <p>
+                        <span class="text-black font-bold">GMT</span> is a professional manufacturer of Cracking Powder in India. We have developed safe, economical, and silent expansive mortar with non-explosive technology over 10 years.
+                    </p>
+                    <div class="pt-10 border-t border-gray-100 grid grid-cols-2 gap-10">
+                        <div>
+                            <h4 class="text-black font-black text-3xl">10+</h4>
+                            <p class="text-[10px] uppercase font-bold tracking-widest text-gray-400 mt-2">Years of Research</p>
+                        </div>
+                        <div>
+                            <h4 class="text-black font-black text-3xl">ISO</h4>
+                            <p class="text-[10px] uppercase font-bold tracking-widest text-gray-400 mt-2">Certified Quality</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="bg-white section-gap px-8 md:px-20 relative pt-0">
+        <div class="max-w-7xl mx-auto">
+            <div class="flex flex-col md:flex-row justify-between items-end mb-16 gap-8">
+                <div class="max-w-2xl">
+                    <span class="text-gray-400 text-xs font-black uppercase tracking-[0.5em] block mb-4 animate-on-scroll">Our Solutions</span>
+                    <h2 class="text-4xl md:text-6xl font-black leading-tight animate-on-scroll">PRECISION <br><span class="text-gray-200">EQUIPMENT.</span></h2>
+                </div>
+                <a href="productspage.html" class="group flex items-center space-x-4 animate-on-scroll">
+                    <span class="text-sm font-black uppercase tracking-widest border-b-2 border-black pb-1">View All Products</span>
+                    <svg class="w-6 h-6 transition-transform group-hover:translate-x-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8l4 4m0 0l-4 4m4-4H3"></path></svg>
+                </a>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+                <div class="product-card animate-on-scroll" style="transition-delay: 0.1s">
+                    <img src="https://5.imimg.com/data5/MO/MH/MY-11075943/mining-drill-bit-500x500.jpg" class="card-image-bg" alt="GMT-X1">
+                    <div class="card-overlay"></div>
+                    <div class="card-content">
+                        <span class="text-[10px] font-black uppercase tracking-[0.3em] text-gray-300">HSCA TYPE-1</span>
+                        <h3 class="text-2xl font-black mt-2">GMT-X1 Extreme</h3>
+                        <div class="card-description">
+                            <p>Optimized for high-temperature environments. Ideal for quarrying and hard stone fragmentation.</p>
+                            <span class="inline-block mt-4 text-[10px] font-bold uppercase tracking-widest border-b border-white pb-1">Spec Sheet →</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="product-card animate-on-scroll" style="transition-delay: 0.2s">
+                    <img src="https://5.imimg.com/data5/SELLER/Default/2022/2/IS/EK/KW/3996520/segment-for-granite-500x500.jpeg" class="card-image-bg" alt="GMT-X2">
+                    <div class="card-overlay"></div>
+                    <div class="card-content">
+                        <span class="text-[10px] font-black uppercase tracking-[0.3em] text-gray-300">HSCA TYPE-2</span>
+                        <h3 class="text-2xl font-black mt-2">GMT-X2 Balanced</h3>
+                        <div class="card-description">
+                            <p>Designed for moderate climates. Perfect for reinforced concrete removal and urban demolition.</p>
+                            <span class="inline-block mt-4 text-[10px] font-bold uppercase tracking-widest border-b border-white pb-1">Spec Sheet →</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="product-card animate-on-scroll" style="transition-delay: 0.3s">
+                    <img src="https://5.imimg.com/data5/HX/CM/EO/SELLER-2282666/edge-cutting-blade-500x500.JPG" class="card-image-bg" alt="Tapper Bits">
+                    <div class="card-overlay"></div>
+                    <div class="card-content">
+                        <span class="text-[10px] font-black uppercase tracking-[0.3em] text-gray-300">GMT TOOLS</span>
+                        <h3 class="text-2xl font-black mt-2">Panther Tapper Bits</h3>
+                        <div class="card-description">
+                            <p>High-grade alloy bits (30-38mm) designed for precision drilling in granite and stone formations.</p>
+                            <span class="inline-block mt-4 text-[10px] font-bold uppercase tracking-widest border-b border-white pb-1">Spec Sheet →</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="product-card animate-on-scroll" style="transition-delay: 0.4s">
+                    <img src="https://image.made-in-china.com/365f3j00GMdisLqKlvkR/Stablity-Granie-Diamond-Wire-for-Block-Profiling.webp" class="card-image-bg" alt="Diamond Wire">
+                    <div class="card-overlay"></div>
+                    <div class="card-content">
+                        <span class="text-[10px] font-black uppercase tracking-[0.3em] text-gray-300">CUTTING TECH</span>
+                        <h3 class="text-2xl font-black mt-2">GMT Diamond Wire</h3>
+                        <div class="card-description">
+                            <p>Advanced abrasives for dressing and cutting blocks into desired shapes and sizes with minimal waste.</p>
+                            <span class="inline-block mt-4 text-[10px] font-bold uppercase tracking-widest border-b border-white pb-1">Spec Sheet →</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section id="operations" class="bg-white pb-32 px-8 md:px-20 overflow-hidden relative border-t border-gray-100 tight-gap">
+        <div class="absolute top-10 right-0 text-[15vw] font-black text-gray-50 opacity-10 select-none pointer-events-none whitespace-nowrap scroll-parallax" data-speed="0.15">
+            CORE SERVICES
+        </div>
+
+        <div class="max-w-7xl mx-auto relative z-10">
+            <div class="mb-16">
+                <span class="text-gray-400 text-xs font-black uppercase tracking-[0.5em] block mb-4 animate-on-scroll">Field Operations</span>
+                <h2 class="text-4xl md:text-6xl font-black leading-tight text-black animate-on-scroll">
+                    ENGINEERED <br><span class="text-gray-200">EXECUTION.</span>
+                </h2>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                <div class="service-card animate-on-scroll" style="transition-delay: 0.1s">
+                    <img src="data:image/jpeg;base64,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" class="card-image-bg" alt="Demolition">
+                    <div class="card-overlay"></div>
+                    <div class="card-content">
+                        <span class="text-gray-200 text-xs font-black mb-2">01 / FIELD</span>
+                        <h3 class="text-2xl font-black text-white">Controlled Demolition</h3>
+                        <div class="card-description">
+                            <p>High-precision removal of reinforced concrete structures in noise-sensitive environments.</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="service-card animate-on-scroll" style="transition-delay: 0.2s">
+                    <img src="https://www.creativegranite.com/wp-content/uploads/2016/03/Granite-Quarry.jpg" class="card-image-bg" alt="Quarrying">
+                    <div class="card-overlay"></div>
+                    <div class="card-content">
+                        <span class="text-gray-200 text-xs font-black mb-2">02 / MINING</span>
+                        <h3 class="text-2xl font-black text-white">Granite Quarrying</h3>
+                        <div class="card-description">
+                            <p>Maximizing yield and block size through non-explosive cracking technologies.</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="service-card animate-on-scroll" style="transition-delay: 0.3s">
+                    <img src="https://images.newscientist.com/wp-content/uploads/2017/10/23181141/dmgbn8vx0aaeftc.jpg" class="card-image-bg" alt="Underwater">
+                    <div class="card-overlay"></div>
+                    <div class="card-content">
+                        <span class="text-gray-200 text-xs font-black mb-2">03 / SPECIAL</span>
+                        <h3 class="text-2xl font-black text-white">Underwater Cracking</h3>
+                        <div class="card-description">
+                            <p>Specialized expansive applications for harbor deepening and submerged rock removal.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section id="contact" class="bg-white py-32 px-8 md:px-20 relative border-t border-gray-100">
+        <div class="max-w-7xl mx-auto">
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-24">
+                <div class="animate-on-scroll">
+                    <span class="text-gray-400 text-xs font-black uppercase tracking-[0.5em] block mb-4">Connect With Us</span>
+                    <h2 class="text-4xl md:text-7xl font-black leading-tight text-black mb-12">LET'S START <br><span class="text-gray-200">A PROJECT.</span></h2>
+                    
+                    <div class="space-y-12">
+                        <div>
+                            <p class="text-[10px] uppercase font-black tracking-widest text-gray-400 mb-2">General Inquiries</p>
+                            <p class="text-xl font-bold">info@gmtmining.com</p>
+                        </div>
+                        <div>
+                            <p class="text-[10px] uppercase font-black tracking-widest text-gray-400 mb-2">Technical Support</p>
+                            <p class="text-xl font-bold">+91 98450 00000</p>
+                        </div>
+                        <div>
+                            <p class="text-[10px] uppercase font-black tracking-widest text-gray-400 mb-2">Headquarters</p>
+                            <p class="text-xl font-bold">Industrial Hub, Rajasthan, India</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="animate-on-scroll" style="transition-delay: 0.2s">
+                    <form class="space-y-10">
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-10">
+                            <div>
+                                <label class="text-[10px] uppercase font-black tracking-widest text-gray-400">Full Name</label>
+                                <input type="text" class="form-input">
+                            </div>
+                            <div>
+                                <label class="text-[10px] uppercase font-black tracking-widest text-gray-400">Email Address</label>
+                                <input type="email" class="form-input">
+                            </div>
+                        </div>
+                        <div>
+                            <label class="text-[10px] uppercase font-black tracking-widest text-gray-400">Service Requirement</label>
+                            <input type="text" class="form-input">
+                        </div>
+                        <div>
+                            <label class="text-[10px] uppercase font-black tracking-widest text-gray-400">Project Details</label>
+                            <textarea rows="4" class="form-input"></textarea>
+                        </div>
+                        <button class="px-16 py-5 bg-black text-white text-[10px] font-bold uppercase tracking-widest hover:bg-gray-800 transition-all shadow-xl">
+                            Send Inquiry
+                        </button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <footer class="bg-white py-20 px-8 md:px-20 border-t border-gray-100">
+        <div class="max-w-7xl mx-auto">
+            <div class="flex flex-col md:flex-row justify-between items-start md:items-center gap-12">
+                <div>
+                    <div class="text-2xl font-black tracking-tighter mb-4">
+                        GMT<span class="text-gray-300 font-light italic">MINING</span>
+                    </div>
+                    <p class="text-gray-400 text-xs tracking-widest">© 2026 PRECISION CRACKING SOLUTIONS PVT LTD.</p>
+                </div>
+
+                <nav class="flex flex-wrap gap-x-12 gap-y-6 text-[10px] font-black uppercase tracking-[0.3em] text-gray-400">
+                    <a href="#" class="hover:text-black">Privacy Policy</a>
+                    <a href="#" class="hover:text-black">Terms of Service</a>
+                    <a href="#" class="hover:text-black">Compliance</a>
+                    <a href="#" class="hover:text-black">LinkedIn</a>
+                </nav>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        function toggleMenu() {
+            const sidebar = document.getElementById('sidebar');
+            const isOpen = sidebar.style.transform === 'translateX(0px)';
+            sidebar.style.transform = isOpen ? 'translateX(-100%)' : 'translateX(0px)';
+        }
+
+        document.addEventListener('mousemove', (e) => {
+            if (window.innerWidth > 768) {
+                const video = document.getElementById('heroVideo');
+                const x = (window.innerWidth - e.pageX) / 80;
+                const y = (window.innerHeight - e.pageY) / 80;
+                video.style.transform = `scale(1.1) translate(${x}px, ${y}px)`;
+            }
+        });
+
+        const observerOptions = { threshold: 0.1 };
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('is-visible');
+                }
+            });
+        }, observerOptions);
+
+        document.querySelectorAll('.animate-on-scroll').forEach(el => observer.observe(el));
+
+        window.addEventListener('scroll', () => {
+            const scrolled = window.pageYOffset;
+            document.querySelectorAll('.scroll-parallax').forEach(el => {
+                const speed = parseFloat(el.getAttribute('data-speed')) || 0.05;
+                const yPos = -(scrolled * speed);
+                el.style.transform = `translateY(${yPos}px)`;
+            });
+        });
+    </script>
+</body>
+</html>
