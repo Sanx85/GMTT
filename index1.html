@@ -1,0 +1,446 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GMT Mining | Precision Cracking Solutions</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;700;900&display=swap" rel="stylesheet">
+    <style>
+        body { font-family: 'Inter', sans-serif; background: white; overflow-x: hidden; margin: 0; scroll-behavior: smooth; }
+
+        /* Entrance Animations */
+        @keyframes revealUp {
+            from { opacity: 0; transform: translateY(40px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        .animate-reveal { animation: revealUp 1s cubic-bezier(0.2, 1, 0.3, 1) forwards; }
+        .delay-1 { animation-delay: 0.2s; }
+        .delay-2 { animation-delay: 0.4s; }
+
+        /* --- HERO SECTION --- */
+        .hero-wrapper {
+            display: grid;
+            grid-template-columns: 1fr;
+            min-height: 100vh;
+            padding: 0 5%;
+            align-items: center;
+            gap: 2rem;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .hero-wrapper::before {
+            content: ''; position: absolute; top: 0; left: 0; width: 100%; height: 180px;
+            background: linear-gradient(to bottom, rgba(255,255,255,1) 0%, rgba(255,255,255,0) 100%);
+            z-index: 20; pointer-events: none;
+        }
+        .hero-wrapper::after {
+            content: ''; position: absolute; bottom: 0; left: 0; width: 100%; height: 120px;
+            background: linear-gradient(to top, rgba(255,255,255,1) 0%, rgba(255,255,255,0) 100%);
+            z-index: 20; pointer-events: none;
+        }
+
+        @media (min-width: 1024px) {
+            .hero-wrapper { grid-template-columns: 1.1fr 1fr; height: 100vh; }
+        }
+
+        /* Desktop Grid */
+        .image-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 1.5rem;
+            height: 120vh;
+            position: relative;
+        }
+        .column { display: flex; flex-direction: column; gap: 1.5rem; }
+        .grid-card { width: 100%; border-radius: 40px; overflow: hidden; background: #f4f4f4; box-shadow: 0 20px 40px rgba(0,0,0,0.03); will-change: transform, opacity; }
+
+        @keyframes scrollDown { 0% { transform: translateY(0); } 100% { transform: translateY(-50%); } }
+        @keyframes scrollUp { 0% { transform: translateY(-50%); } 100% { transform: translateY(0); } }
+        .animate-down { animation: scrollDown 40s linear infinite; }
+        .animate-up { animation: scrollUp 40s linear infinite; }
+        .grid-card img { width: 100%; height: 100%; object-fit: cover; display: block; }
+
+        /* --- MOBILE RESPONSIVE (PADDING REMOVED) --- */
+        @media (max-width: 1023px) {
+            .hero-wrapper {
+                display: flex;
+                flex-direction: column;
+                padding-top: 80px; /* Reduced top padding */
+                padding-bottom: 20px;
+                padding-left: 0.5rem; /* Minimal padding for mobile content */
+                padding-right: 0.5rem;
+                height: auto;
+                text-align: center;
+            }
+            .image-grid { display: none; } 
+            
+            .mobile-marquee-container {
+                display: block;
+                width: 100vw;
+                margin-left: calc(-50vw + 50%);
+                overflow: hidden;
+                margin-top: 2rem;
+                position: relative;
+            }
+            
+            .marquee-content {
+                display: flex;
+                gap: 0.75rem;
+                width: max-content;
+                animation: marquee 30s linear infinite;
+                padding: 0 0.5rem;
+            }
+
+            .marquee-item {
+                width: 280px;
+                height: 380px;
+                border-radius: 30px;
+                overflow: hidden;
+                flex-shrink: 0;
+                box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+            }
+
+            .marquee-item img {
+                width: 100%;
+                height: 100%;
+                object-fit: cover;
+            }
+
+            @keyframes marquee {
+                0% { transform: translateX(0); }
+                100% { transform: translateX(-50%); }
+            }
+
+            .hero-btns {
+                flex-direction: column;
+                align-items: center;
+                gap: 1rem;
+                width: 100%;
+                margin-top: 1.5rem;
+            }
+            .hero-btns button { width: 80%; }
+        }
+
+        @media (min-width: 1024px) {
+            .mobile-marquee-container { display: none; }
+        }
+
+        /* --- GLOBAL STYLES --- */
+        .scroll-parallax { will-change: transform; transition: transform 0.2s cubic-bezier(0,0,0.1,1); }
+        .animate-on-scroll { opacity: 0; transform: translateY(30px); transition: all 0.8s cubic-bezier(0.2, 1, 0.3, 1); }
+        .animate-on-scroll.is-visible { opacity: 1; transform: translateY(0); }
+
+        #sidebar { transition: transform 0.5s cubic-bezier(0.77, 0, 0.175, 1); backdrop-filter: blur(15px); background: rgba(255, 255, 255, 0.98); transform: translateX(-100%); z-index: 1000; }
+        .burger-bar { transition: 0.3s; width: 28px; height: 2px; background: black; display: block; border-radius: 2px; }
+
+        /* Typography */
+        .section-title { font-weight: 400; font-size: 2.25rem; line-height: 2.5rem; color: #000; letter-spacing: -0.025em; }
+        @media (min-width: 768px) { .section-title { font-size: 3.75rem; line-height: 1; } }
+        
+        .main-heading-bold { font-weight: 900; }
+        .product-title-thin { font-weight: 300; color: #111827; }
+
+        /* Grid Logic */
+        .product-grid-container { display: grid; grid-template-columns: repeat(1, minmax(0, 1fr)); }
+        @media (min-width: 768px) { .product-grid-container { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+        @media (min-width: 1024px) { .product-grid-container { grid-template-columns: repeat(4, minmax(0, 1fr)); } }
+
+        .product-item-wrapper { padding: 1.5rem; position: relative; }
+        @media (min-width: 1024px) {
+            .product-item-wrapper { padding: 0 1.5rem; }
+            .product-item-wrapper:not(:last-child)::after {
+                content: ''; position: absolute; right: 0; top: 0; height: 100%; width: 1px; background-color: #f3f4f6;
+            }
+        }
+
+        .product-img-box { width: 100%; aspect-ratio: 1 / 1; border-radius: 16px; overflow: hidden; background: #fff; position: relative; margin-bottom: 1.5rem; border: 1px solid #f3f4f6; }
+        .product-img-box img { width: 100%; height: 100%; object-fit: contain; transition: transform 0.7s ease; }
+        .product-item-wrapper:hover .product-img-box img { transform: scale(1.08); }
+
+        .service-card { position: relative; overflow: hidden; background: #fff; height: 500px; cursor: pointer; border: 1px solid #eee; transition: all 0.6s cubic-bezier(0.2, 1, 0.3, 1); }
+        .card-image-bg { position: absolute; top: 0; left: 0; width: 100%; height: 100%; object-fit: cover; transition: transform 0.8s ease; z-index: 1; }
+        .card-overlay { position: absolute; inset: 0; background: linear-gradient(to bottom, rgba(0,0,0,0) 40%, rgba(0,0,0,0.8) 100%); z-index: 2; }
+        .card-content { position: relative; z-index: 3; height: 100%; display: flex; flex-direction: column; justify-content: flex-end; padding: 2rem; color: white; }
+        .card-description { max-height: 0; opacity: 0; overflow: hidden; transition: all 0.5s cubic-bezier(0.2, 1, 0.3, 1); font-size: 0.875rem; margin-top: 1rem; }
+        .service-card:hover .card-description { max-height: 150px; opacity: 1; }
+
+        .form-input { width: 100%; background: transparent; border: none; border-bottom: 1px solid #e5e7eb; padding: 1rem 0; font-size: 0.875rem; outline: none; transition: border-color 0.3s; }
+        .form-input:focus { border-color: #000; }
+        .section-gap { padding-top: 8rem; padding-bottom: 8rem; }
+        @media (max-width: 1023px) { .section-gap { padding-top: 3rem; padding-bottom: 3rem; } }
+        .step-card { background: #fcfcfc; border: 1px solid #f3f3f3; padding: 3rem 2rem; border-radius: 24px; }
+
+        /* --- ABOUT SLOTS --- */
+        .about-slot { border-radius: 24px; overflow: hidden; background: #f9f9f9; height: 320px; position: relative; }
+        .about-slot img { width: 100%; height: 100%; object-fit: cover; display: block; }
+        
+        @media (min-width: 1024px) {
+            .about-slot img { opacity: 0; transition: opacity 0.4s; }
+            .about-slot.filled img { opacity: 1; }
+        }
+    </style>
+</head>
+<body class="antialiased">
+
+    <div id="sidebar" class="fixed top-0 left-0 h-full w-72 shadow-2xl flex flex-col p-10">
+        <button onclick="toggleMenu()" class="self-end mb-12 text-gray-400 hover:text-black">
+            <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>
+        </button>
+        <nav class="flex flex-col space-y-8 text-xs font-bold uppercase tracking-[0.3em] text-gray-500">
+            <a href="#" class="text-black">Home</a>
+            <a href="#about" class="hover:text-black">About Us</a>
+            <a href="productspage.html" class="hover:text-black">Products</a>
+            <a href="#operations" class="hover:text-black">Operations</a>
+            <a href="#contact" class="hover:text-black">Contact</a>
+        </nav>
+        <div class="mt-auto">
+            <button class="w-full py-4 bg-black text-white text-[10px] font-bold uppercase tracking-widest">Client Portal</button>
+        </div>
+    </div>
+
+    <header class="absolute top-0 w-full z-[400] flex justify-between items-center px-4 md:px-16 h-24">
+        <div class="text-2xl font-black tracking-tighter animate-reveal">
+            GMT<span class="text-gray-400 font-light italic">MINING</span>
+        </div>
+    </header>
+
+    <div class="fixed top-0 right-0 z-[500] px-4 md:px-16 h-24 flex items-center">
+        <button onclick="toggleMenu()" class="p-3 bg-white shadow-lg rounded-xl flex flex-col space-y-1.5 hover:scale-105 transition-transform">
+            <span class="burger-bar"></span>
+            <span class="burger-bar"></span>
+            <span class="burger-bar" style="width: 18px; align-self: flex-end;"></span>
+        </button>
+    </div>
+
+    <main class="hero-wrapper">
+        <div class="hero-content-box">
+            <div class="max-w-2xl mx-auto">
+                <span class="text-gray-400 text-xs font-black uppercase tracking-[0.5em] block mb-4 animate-reveal">GMT Mining Solutions</span>
+                <h1 class="text-6xl md:text-8xl font-normal leading-[0.85] text-black mb-6 animate-reveal delay-1 tracking-tight">
+                    SILENT <br> <span class="text-gray-200">POWER.</span>
+                </h1>
+                <p class="text-gray-500 text-lg leading-relaxed mb-8 animate-reveal delay-2 px-4 md:px-0">
+                    Redefining demolition with advanced <span class="text-black font-bold">Super Expansive Mortar</span>. Safe, non-explosive, and eco-friendly technology designed for high-precision rock fragmentation.
+                </p>
+                <div class="flex flex-wrap items-center gap-4 hero-btns animate-reveal delay-2">
+                    <button class="px-10 py-5 bg-black text-white text-[10px] font-bold uppercase tracking-widest rounded-xl shadow-2xl">Start Creating</button>
+                    <button class="px-10 py-5 bg-white border border-gray-200 text-black text-[10px] font-bold uppercase tracking-widest rounded-xl">Explore Gallery</button>
+                </div>
+            </div>
+        </div>
+
+        <div class="image-grid z-10" id="heroGrid">
+            <div class="column animate-down">
+                <div class="grid-card h-[350px]" id="fly-1"><img src="Assests/images/hero.1.png"></div>
+                <div class="grid-card h-[300px]" id="fly-2"><img src="Assests/images/hero.3.png"></div>
+                <div class="grid-card h-[350px]"><img src="Assests/images/hero.6.png"></div>
+            </div>
+            <div class="column animate-up" style="padding-top: 80px;">
+                <div class="grid-card h-[280px]" id="fly-3"><img src="Assests/images/hero.2.png"></div>
+                <div class="grid-card h-[400px]" id="fly-4"><img src="Assests/images/hero.5.png"></div>
+                <div class="grid-card h-[280px]"><img src="Assests/images/hero.4.png"></div>
+            </div>
+        </div>
+
+        <div class="mobile-marquee-container">
+            <div class="marquee-content">
+                <div class="marquee-item"><img src="Assests/images/hero.1.png"></div>
+                <div class="marquee-item"><img src="Assests/images/hero.2.png"></div>
+                <div class="marquee-item"><img src="Assests/images/hero.3.png"></div>
+                <div class="marquee-item"><img src="Assests/images/hero.4.png"></div>
+                <div class="marquee-item"><img src="Assests/images/hero.5.png"></div>
+            </div>
+        </div>
+    </main>
+
+    <section class="section-gap px-0 md:px-20 bg-white" id="about">
+        <div class="max-w-7xl mx-auto">
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-12 px-4 md:px-0">
+                <div class="animate-on-scroll">
+                    <span class="text-gray-400 text-xs font-black uppercase tracking-[0.5em] block mb-4">Established Expertise</span>
+                    <h2 class="section-title">10 YEARS OF <br><span class="text-gray-200">INNOVATION.</span></h2>
+                </div>
+                <div class="animate-on-scroll flex flex-col justify-center">
+                    <p class="text-gray-500 text-lg leading-relaxed">
+                        <span class="text-black font-bold">GMT</span> is a professional manufacturer of Cracking Powder in India. We have developed safe, economical, and silent expansive mortar with non-explosive technology over 10 years.
+                    </p>
+                </div>
+            </div>
+            
+            <div class="grid grid-cols-2 md:grid-cols-4 gap-4 px-2 md:px-0" id="aboutTarget">
+                <div class="about-slot" id="slot-1"><img src="Assests/images/hero.1.png"></div>
+                <div class="about-slot" id="slot-2"><img src="Assests/images/hero.3.png"></div>
+                <div class="about-slot" id="slot-3"><img src="Assests/images/hero.2.png"></div>
+                <div class="about-slot" id="slot-4"><img src="Assests/images/hero.5.png"></div>
+            </div>
+        </div>
+    </section>
+
+    <section class="section-gap px-4 md:px-20 bg-white border-t border-gray-50">
+        <div class="max-w-7xl mx-auto">
+            <div class="flex flex-col md:flex-row justify-between items-start md:items-end mb-16 gap-8">
+                <h2 class="section-title">Precision Steps <br> To Extraction</h2>
+                <p class="max-w-md text-gray-400 text-sm animate-on-scroll">At GMT Mining, we prioritize safety and efficiency. Our expansive mortar technology is designed to deliver high-precision results without the risks of traditional explosives.</p>
+            </div>
+            
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-8 animate-on-scroll">
+                <div class="step-card">
+                    <h4 class="font-bold text-black mb-4">Site Analysis</h4>
+                    <p class="text-gray-500 text-sm leading-relaxed">We analyze rock density and environmental factors to determine the optimal hole pattern and mortar grade for maximum fragmentation efficiency.</p>
+                </div>
+                <div class="step-card">
+                    <h4 class="font-bold text-black mb-4">Precision Loading</h4>
+                    <p class="text-gray-500 text-sm leading-relaxed">Our non-explosive cracking powder is mixed and applied with technical precision, ensuring silent expansion and controlled cracking patterns.</p>
+                </div>
+                <div class="step-card">
+                    <h4 class="font-bold text-black mb-4">Clean Extraction</h4>
+                    <p class="text-gray-500 text-sm leading-relaxed">Achieve perfect block sizes in granite and marble quarrying with zero vibration, reducing waste and protecting the integrity of the material.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="bg-white section-gap px-2 md:px-20 relative pt-0">
+        <div class="max-w-7xl mx-auto">
+            <div class="flex flex-col md:flex-row justify-between items-start md:items-center mb-16 gap-4 px-4 md:px-0">
+                <h2 class="section-title main-heading-bold">Featured Products</h2>
+                <a href="productspage.html" class="px-6 py-2 border border-gray-200 rounded-full text-xs font-medium hover:bg-gray-50 transition-all animate-on-scroll">View products</a>
+            </div>
+            <div class="product-grid-container">
+                <div class="product-item-wrapper animate-on-scroll">
+                    <div class="product-img-box"><img src="https://5.imimg.com/data5/MO/MH/MY-11075943/mining-drill-bit-500x500.jpg"></div>
+                    <h3 class="text-xl product-title-thin mb-6 leading-tight">GMT-X1 Extreme Power Solution</h3>
+                    <a href="productspage.html" class="text-xs font-bold text-gray-600 flex items-center group">View Details <svg class="w-4 h-4 ml-2 transform group-hover:translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8l4 4m0 0l-4 4m4-4H3"></path></svg></a>
+                </div>
+                <div class="product-item-wrapper animate-on-scroll" style="transition-delay: 0.1s">
+                    <div class="product-img-box"><img src="https://5.imimg.com/data5/SELLER/Default/2022/2/IS/EK/KW/3996520/segment-for-granite-500x500.jpeg"></div>
+                    <h3 class="text-xl product-title-thin mb-6 leading-tight">GMT-X2 Balanced Mortar Tech</h3>
+                    <a href="productspage.html" class="text-xs font-bold text-gray-600 flex items-center group">View Details <svg class="w-4 h-4 ml-2 transform group-hover:translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8l4 4m0 0l-4 4m4-4H3"></path></svg></a>
+                </div>
+                <div class="product-item-wrapper animate-on-scroll" style="transition-delay: 0.2s">
+                    <div class="product-img-box"><img src="https://5.imimg.com/data5/HX/CM/EO/SELLER-2282666/edge-cutting-blade-500x500.JPG"></div>
+                    <h3 class="text-xl product-title-thin mb-6 leading-tight">Panther High-Grade Tapper Bits</h3>
+                    <a href="productspage.html" class="text-xs font-bold text-gray-600 flex items-center group">View Details <svg class="w-4 h-4 ml-2 transform group-hover:translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8l4 4m0 0l-4 4m4-4H3"></path></svg></a>
+                </div>
+                <div class="product-item-wrapper animate-on-scroll" style="transition-delay: 0.3s">
+                    <div class="product-img-box"><img src="https://image.made-in-china.com/365f3j00GMdisLqKlvkR/Stablity-Granie-Diamond-Wire-for-Block-Profiling.webp"></div>
+                    <h3 class="text-xl product-title-thin mb-6 leading-tight">GMT Advanced Diamond Wire</h3>
+                    <a href="productspage.html" class="text-xs font-bold text-gray-600 flex items-center group">View Details <svg class="w-4 h-4 ml-2 transform group-hover:translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8l4 4m0 0l-4 4m4-4H3"></path></svg></a>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section id="operations" class="bg-white pb-32 px-4 md:px-20 relative border-t border-gray-100 tight-gap">
+        <div class="absolute top-10 right-0 text-[15vw] font-black text-gray-50 opacity-10 select-none pointer-events-none whitespace-nowrap scroll-parallax" data-speed="0.15">CORE SERVICES</div>
+        <div class="max-w-7xl mx-auto relative z-10">
+            <h2 class="section-title">ENGINEERED <br><span class="text-gray-200">EXECUTION.</span></h2>
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mt-16">
+                <div class="service-card animate-on-scroll">
+                    <img src="https://images.unsplash.com/photo-1541888946425-d81bb19480c5?auto=format&fit=crop&q=80&w=1000" class="card-image-bg">
+                    <div class="card-overlay"></div>
+                    <div class="card-content">
+                        <span class="text-gray-200 text-xs font-black mb-2">01 / FIELD</span>
+                        <h3 class="text-2xl font-black text-white">Controlled Demolition</h3>
+                        <div class="card-description"><p>High-precision removal of reinforced concrete structures in noise-sensitive environments.</p></div>
+                    </div>
+                </div>
+                <div class="service-card animate-on-scroll" style="transition-delay: 0.1s">
+                    <img src="https://www.creativegranite.com/wp-content/uploads/2016/03/Granite-Quarry.jpg" class="card-image-bg">
+                    <div class="card-overlay"></div>
+                    <div class="card-content">
+                        <span class="text-gray-200 text-xs font-black mb-2">02 / MINING</span>
+                        <h3 class="text-2xl font-black text-white">Granite Quarrying</h3>
+                        <div class="card-description"><p>Maximizing yield and block size through non-explosive cracking technologies.</p></div>
+                    </div>
+                </div>
+                <div class="service-card animate-on-scroll" style="transition-delay: 0.2s">
+                    <img src="https://images.newscientist.com/wp-content/uploads/2017/10/23181141/dmgbn8vx0aaeftc.jpg" class="card-image-bg">
+                    <div class="card-overlay"></div>
+                    <div class="card-content">
+                        <span class="text-gray-200 text-xs font-black mb-2">03 / SPECIAL</span>
+                        <h3 class="text-2xl font-black text-white">Underwater Cracking</h3>
+                        <div class="card-description"><p>Specialized applications for harbor deepening and submerged rock removal.</p></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section id="contact" class="section-gap bg-white px-4 md:px-20 relative border-t border-gray-100">
+        <div class="max-w-7xl mx-auto">
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-24">
+                <div class="animate-on-scroll">
+                    <h2 class="section-title mb-12">LET'S START <br><span class="text-gray-200">A PROJECT.</span></h2>
+                    <div class="space-y-12">
+                        <div><p class="text-[10px] uppercase font-black text-gray-400 mb-2">General Inquiries</p><p class="text-xl font-bold">info@gmtmining.com</p></div>
+                        <div><p class="text-[10px] uppercase font-black text-gray-400 mb-2">Headquarters</p><p class="text-xl font-bold">Industrial Hub, Rajasthan, India</p></div>
+                    </div>
+                </div>
+                <div class="animate-on-scroll">
+                    <form class="space-y-10">
+                        <input type="text" placeholder="Full Name" class="form-input">
+                        <input type="email" placeholder="Email Address" class="form-input">
+                        <textarea rows="4" placeholder="Project Details" class="form-input"></textarea>
+                        <button class="px-16 py-5 bg-black text-white text-[10px] font-bold uppercase tracking-widest shadow-xl">Send Inquiry</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <footer class="bg-white py-20 px-4 md:px-20 border-t border-gray-100 text-center">
+        <div class="text-2xl font-black tracking-tighter mb-4">GMT<span class="text-gray-300 font-light italic">MINING</span></div>
+        <p class="text-gray-400 text-xs tracking-widest uppercase">© 2026 Precision Cracking Solutions Pvt Ltd.</p>
+    </footer>
+
+    <script>
+        function toggleMenu() {
+            const sidebar = document.getElementById('sidebar');
+            const isOpen = sidebar.style.transform === 'translateX(0px)';
+            sidebar.style.transform = isOpen ? 'translateX(-100%)' : 'translateX(0px)';
+        }
+
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => { if (entry.isIntersecting) entry.target.classList.add('is-visible'); });
+        }, { threshold: 0.1 });
+        document.querySelectorAll('.animate-on-scroll').forEach(el => observer.observe(el));
+
+        window.addEventListener('scroll', () => {
+            const scrolled = window.pageYOffset;
+            document.querySelectorAll('.scroll-parallax').forEach(el => {
+                const speed = parseFloat(el.getAttribute('data-speed')) || 0.05;
+                el.style.transform = `translateY(${-(scrolled * speed)}px)`;
+            });
+
+            if (window.innerWidth >= 1024) {
+                const aboutTop = document.getElementById('about').offsetTop;
+                const progress = Math.max(0, Math.min(1, scrolled / (aboutTop - 200)));
+
+                const flyCards = ['fly-1', 'fly-2', 'fly-3', 'fly-4'];
+                const slots = ['slot-1', 'slot-2', 'slot-3', 'slot-4'];
+
+                flyCards.forEach((id, i) => {
+                    const flyEl = document.getElementById(id);
+                    const slotEl = document.getElementById(slots[i]);
+                    const flyRect = flyEl.getBoundingClientRect();
+                    const slotRect = slotEl.getBoundingClientRect();
+                    const dX = slotRect.left - flyRect.left;
+                    const dY = slotRect.top - flyRect.top;
+
+                    if (progress < 1) {
+                        flyEl.style.transform = `translate(${dX * progress}px, ${dY * progress}px)`;
+                        flyEl.style.opacity = 1 - (progress * 0.4);
+                        slotEl.classList.remove('filled');
+                    } else {
+                        flyEl.style.opacity = "0";
+                        slotEl.classList.add('filled');
+                    }
+                });
+            }
+        });
+    </script>
+</body>
+</html>
